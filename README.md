@@ -1,2 +1,3 @@
 # NS-Vertrektijden
-Retrieve and show next train departure times from chosen station and direction.
+API-wrapper for [NS API](https://apiportal.ns.nl/)
+with the goal to retrieve and show next train departure times for chosen station and direction.
