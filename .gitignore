@@ -1,3 +1,16 @@
+# Platform.IO
+.clang_complete
+.gcc-flags.json
+.travis.yml
+.pioenvs
+.piolibdeps
+test
+lib
+include
+platformio.ini
+TODO.txt
+secrets.h
+
 # Prerequisites
 *.d
 
