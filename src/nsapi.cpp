@@ -15,7 +15,7 @@ NSAPI::NSAPI(const char* OcpApimSubscriptionKey) :
 NSAPI::NSAPI_Error NSAPI::fetchURL(
   BearSSL::WiFiClientSecure *client,
   const char *station,
-  String *responsebody)
+  char*& body)
 {
   bool finishedHeaders = false;
   bool gotResponse = false;
@@ -24,9 +24,10 @@ NSAPI::NSAPI_Error NSAPI::fetchURL(
   char path[100];
   char c;
   uint32_t contentLength = 0;
+  uint32_t position = 0;
 
   sprintf(path, PATH_NS, MAX_JOURNEYS, station);
-  Serial.println(path);
+  // Serial.println(path);
 
   if (!client->connect(HOST_NS, PORT_NS)) {
     return NSAPI_Error_NoConnection;
@@ -47,8 +48,8 @@ NSAPI::NSAPI_Error NSAPI::fetchURL(
       c = client->read();
       // body
       if (finishedHeaders) {
-        responsebody->concat(c);
-        if (responsebody->length() == contentLength) timeout = millis();
+        body[position++] = c;
+        if (position == contentLength) timeout = millis();
       } else {
       // header
         // eol
@@ -56,7 +57,7 @@ NSAPI::NSAPI_Error NSAPI::fetchURL(
           if (line == "\r") {
             // end of header
             finishedHeaders = true;
-            Serial.println(headers);
+            // Serial.println(headers);
           } else
           if (line.indexOf("Content-Length") > -1) {
             // Content-Length
@@ -64,7 +65,7 @@ NSAPI::NSAPI_Error NSAPI::fetchURL(
             if (contentLength > MAX_SIZE_RETURN_STRING) {
               return NSAPI_Error_ResponseToLong;
             }
-            responsebody->reserve(contentLength+1);
+            body = (char*)malloc(contentLength+1);
           }
           headers.concat(line);
           headers.concat("\n");
@@ -84,6 +85,6 @@ NSAPI::NSAPI_Error NSAPI::fetchURL(
   }
 
   client->stop();
-  Serial.printf("Length content: %d\n", responsebody->length());
+  body[position] = 0;
   return NSAPI_Error_None;
 }

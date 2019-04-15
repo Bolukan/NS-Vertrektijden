@@ -22,7 +22,7 @@ public:
 
   // constructor
   NSAPI(const char* OcpApimSubscriptionKey);
-  NSAPI_Error fetchURL(BearSSL::WiFiClientSecure *client, const char *station, String *responsebody);
+  NSAPI_Error fetchURL(BearSSL::WiFiClientSecure *client, const char *station, char*& body);
 
 private:
   static const char     HOST_NS[]       ;
